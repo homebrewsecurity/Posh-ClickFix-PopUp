@@ -1,5 +1,5 @@
 # Posh-ClickFix-PopUp
-This script monitors the user clipboard and alerts the user if a potentially malicious command is run from a set of regular expression patterns common in shellcode execution. Files provided in this repository should be used with caution. Scripts are provided as-is with no warranty or protection. USers are responsible for their own security.
+This script monitors the user clipboard and alerts the user if a potentially malicious command is run from a set of regular expression patterns common in shellcode execution. Files provided in this repository should be used with caution. Scripts are provided as-is with no warranty or protection. Users are responsible for their own security.
 
 # Usage
 Clone the script from the repository to your local machine. Run the script as a background service, in PowerShell profiles, on user login, or as a scheduled task.
