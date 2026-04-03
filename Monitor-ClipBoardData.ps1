@@ -59,18 +59,7 @@ Function Get-Win32ClipboardSequenceNumber
     [Clipboard]::GetClipboardSequenceNumber()
 }
 
-# Locks the clipboard
-Function Lock-Clipboard
-{
-    [Clipboard]::OpenClipboard([IntPtr]::Zero)
-}
-
-# Unlocks the clipboard; don't think too hard about it
-Function Unlock-Clipboard
-{
-    [Clipboard]::CloseClipboard()
-}
-
+# Creates the warning pop-up
 Function New-UserCopyWarning
 {
     Param(
@@ -84,14 +73,18 @@ Function New-UserCopyWarning
 }
 
 ############ Functional Code ############
+
+# Regex patterns to look for mal activity
 $RegExPatterns = @('(?i)powershell.*-command','(?i)powershell.*-e(|[acdemno]+)','(?i)cmd.*/c','(?i)cscript.*(\.vbs|\.js)','(?i)wscript.*(\.vbs|\.js)')
-$LastSequence = 0
+$LastSequence = 0  # Placeholder value
 
 # Runs forever until process stops
 while ($true)
 {
+    # Gets the current sequence number (refer to MS documentation)
     $CurrentSequence = Get-Win32ClipboardSequenceNumber
 
+    # Compares the last known sequence to the current sequence
     if ($LastSequence -ne $CurrentSequence)
     {
         $LastSequence = $CurrentSequence
@@ -100,6 +93,8 @@ while ($true)
         $ContinueLoopChecks = $True
         foreach ($RegEx in $RegExPatterns)
         {
+            # If there's a match in regex, stop checking and create a new warning
+            # This -and operation may need to be moved to the start of the loop because of inefficiency
             if ($Data -match $RegEx -and $ContinueLoopChecks)
             {
                 $ContinueLoopChecks = $False
@@ -109,5 +104,6 @@ while ($true)
         }
     }
 
+    # Waits 3 seconds to start the cycle to check again; edit this value if you want a longer or shorter wait duration
     Start-Sleep -Seconds 3
 }
